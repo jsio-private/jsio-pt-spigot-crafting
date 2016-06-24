@@ -10,12 +10,13 @@
         src: url(assets/minecraftia.ttf);
       }
       .slot {
-        width: 31px;
-        height: 31px;
+        width: 33px;
+        height: 33px;
         position: absolute;
         background-size: 31px;
         margin-left: 1px;
         outline: none;
+        background-repeat: no-repeat;
       }
       .slot:after {
         content: attr(amount);
@@ -32,11 +33,16 @@
       #table-img {
         position:absolute;
       }
-      #empty-div-spacer { height: 250px; }
+      #empty-div-spacer { height: 170px; }
       #test:before { content: attr(lala); }
-      .autocomplete-icon {
+      .select-icon {
         vertical-align: middle;
-        margin-right: 10px;
+        margin-right: 5px;
+        height: 28px;
+      }
+      .output, .input {
+        display: inline-block;
+        vertical-align: top;
       }
     </style>
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.css">
@@ -45,15 +51,33 @@
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-aria.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-messages.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
+    <script src="http://pc035860.github.io/angular-highlightjs/angular-highlightjs.min.js"></script>
   </head>
   <body ng-app="myApp" ng-controller="main">
+    <div class="input">
     <img id="table-img" src="assets/table.png">
     <div data-ng-repeat="i in [] | range:9">
-<!--      {{styleForSlot('craft', i)}}-->
       <div class="slot crafting" amount="{{amountForSlot('craft', i)}}" ng-style="styleForSlot('craft', i)" ng-click="clickOnSlot('craft', i)"></div>
     </div>
     <div class="slot result" amount="{{amountForSlot('result', 0)}}" ng-style="styleForSlot('result', 0)" ng-click="clickOnSlot('result', 0)"></div>
     <div id="empty-div-spacer"></div>
+    <md-input-container ng-style="showQuantity ? {width:280} : {width:364}">
+      <label>Minecraft Item</label>
+      <md-select ng-model="selectedItem" ng-disabled="editing === false" ng-change="onSelectItemChange()">
+        <md-option ng-repeat="item in MC_ITEMS" value="{{item.type}}-{{item.meta}}"><img src="icons/{{item.type}}-{{item.meta}}.png" class="select-icon"> {{item.name}}</md-option>
+      </md-select>
+    </md-input-container>
+    <md-input-container ng-hide="!showQuantity">
+      <md-select ng-model="selectedQuantity" ng-disabled="editing === false" ng-change="onSelectItemChange()">>
+        <md-option ng-repeat="i in [] | range:64" value="{{i + 1}}">{{i + 1}}</md-option>
+      </md-select>
+    </md-input-container>
+    </div>
+    <div class="output" hljs hljs-language="javascript" hljs-source="createOutput()"></div>
+
     <script src="assets/items.js"></script>
     <script src="assets/script.js"></script>
   </body>
